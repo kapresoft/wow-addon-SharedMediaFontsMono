@@ -1,6 +1,7 @@
 
 local addon, xns = ...
 
+--- @type LibSharedMedia-3.0
 local LSM = LibStub("LibSharedMedia-3.0")
 local FONT = LSM.MediaType.FONT
 
