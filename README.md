@@ -6,6 +6,32 @@ A World of Warcraft addon that registers a curated collection of open-source mon
 
 Includes full Latin and Cyrillic (Russian) coverage, plus Noto Sans Mono fonts for Korean, Simplified Chinese, and Traditional Chinese clients.
 
+## Typical Use Cases
+- Viewing Lua code (in-game editors, error viewers, debug consoles)
+- Consoles/chat frames where fixed-width output is required
+- Aligning tabular data (damage meters, DPS/HPS logs, stat comparisons)
+- Distinguishing similar characters (0/O, 1/l/I) in IDs, item links, or macros
+
+## Usage
+
+```lua
+--- @type LibSharedMedia-3.0
+local LSM = LibStub("LibSharedMedia-3.0")
+
+--- @type string
+local jetBrainsMono = LSM:Fetch(LSM.MediaType.FONT, "JetBrains Mono")
+--- @type string
+local ubuntuMono = LSM:Fetch(LSM.MediaType.FONT, "Ubuntu Mono")
+
+--- @type FontString
+local myFontString = UIParent:CreateFontString(nil, "OVERLAY")
+myFontString:SetFont(jetBrainsMono, 12, "")
+
+--- @type FontString
+local myOtherFontString = UIParent:CreateFontString(nil, "OVERLAY")
+myOtherFontString:SetFont(ubuntuMono, 14, "")
+```
+
 ## Available Fonts
 | Name | File Name | Size |
 |---|---|---|
