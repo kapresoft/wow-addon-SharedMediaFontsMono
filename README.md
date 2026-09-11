@@ -4,13 +4,15 @@ A World of Warcraft addon that registers a curated collection of open-source mon
 
 <img width="200" alt="SharedMedia-Fonts-Mono-Logo" src="https://github.com/user-attachments/assets/31d4b829-72c2-4320-bc86-9ad25a23db14" />
 
-Includes full Latin and Cyrillic (Russian) coverage, plus Noto CJK fonts for Chinese, Japanese, and Korean clients.
+Includes full Latin and Cyrillic (Russian) coverage, plus Noto Sans Mono fonts for Korean, Simplified Chinese, and Traditional Chinese clients.
 
 ## Available Fonts
 - Ubuntu Mono
-- Roboto Mono
+- PT Mono
 - JetBrains Mono
-- Noto Sans Mono CJK (Chinese, Japanese, Korean)
+- Noto Sans Mono (Korean)
+- Noto Sans Mono (Simplified Chinese)
+- Noto Sans Mono (Traditional Chinese)
 
 ## Requirements
 - LibSharedMedia-3.0 (embedded or provided by another addon)
