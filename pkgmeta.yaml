@@ -1,0 +1,29 @@
+package-as: SharedMediaFontsMono
+# --------------------------
+enable-nolib-creation: no
+license-output: LICENSE.txt
+manual-changelog:
+  filename: dev/changelog-release.md
+  markup-type: markdown
+
+embedded-libraries:
+  - LibStub
+  - LibPrettyPrint
+
+tools-used:
+  - DevSuite
+  - Bugsack
+  - Bug-Grabber
+
+externals:
+  ThirdParty/Libs/LibSharedMedia-3.0:
+    url: https://repos.wowace.com/wow/libsharedmedia-3-0/trunk
+    tag: latest
+
+ignore:
+  - "*.sh"
+  - "*.md"
+  - "*.yaml"
+  - "*.toml"
+  - dev
+  - ThirdParty/Libs/**/lib.xml
