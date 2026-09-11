@@ -19,3 +19,4 @@ Don't forget to apply labels:
 [describe additional items here]
 
 ## Screenshots
+[screenshots if available]
