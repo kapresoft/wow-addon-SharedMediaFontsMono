@@ -1,8 +1,8 @@
 ## Interface: 11509, 20506, 30403, 40402, 50504, 120100
 ## Version: @project-version@
-## Title: SharedMedia |cff12E600Fonts Mono|r (Includes CJK)
+## Title: SharedMedia |cff12E600Fonts (Mono)|r
 ## Author: Antonio W. Lagnada (kapresoft@gmail.com)
-## Notes: SharedMediaFontsMono registers a curated collection of open-source monospace fonts (Ubuntu Mono, PT Mono, JetBrains Mono, Noto Sans Mono Korean/Simplified Chinese/Traditional Chinese) with LibSharedMedia-3.0 for use by any addon with LSM font support. |cff1784d1This addon is provided 'as is' without any warranties. All rights reserved. Redistribution or modification is not permitted.|r
+## Notes: SharedMediaFontsMono registers a curated collection of open-source monospace fonts, including Noto Sans Mono for Chinese and Korean, with LibSharedMedia for use by other addons. |cff1784d1This addon is provided 'as is' without any warranties. All rights reserved. Redistribution or modification is not permitted.|r
 ## IconTexture: interface/addons/sharedmediafontsmono/assets/sharedmediafontsmono-logo
 
 ## LoadOnDemand: 1
