@@ -7,18 +7,27 @@ A World of Warcraft addon that registers a curated collection of open-source mon
 Includes full Latin and Cyrillic (Russian) coverage, plus Noto Sans Mono fonts for Korean, Simplified Chinese, and Traditional Chinese clients.
 
 ## Available Fonts
-- Ubuntu Mono
-- PT Mono
-- JetBrains Mono
-- Noto Sans Mono (Korean)
-- Noto Sans Mono (Simplified Chinese)
-- Noto Sans Mono (Traditional Chinese)
+| Name | File Name | Size |
+|---|---|---|
+| JetBrains Mono | JetBrainsMono-Regular.ttf | 112 KB |
+| PT Mono | PTMono-Regular.ttf | 165 KB |
+| Ubuntu Mono | UbuntuMono-Regular.ttf | 185 KB |
+| Noto Sans Mono (Korean) | NotoSansMonoCJKkr-Regular.otf | 15.6 MB |
+| Noto Sans Mono (Traditional Chinese) | NotoSansMonoCJKtc-Regular.otf | 15.6 MB |
+| Noto Sans Mono (Simplified Chinese) | NotoSansMonoCJKsc-Regular.otf | 15.6 MB |
 
 ## Requirements
-- LibSharedMedia-3.0 (embedded or provided by another addon)
-- An addon with LSM font support to select the fonts from
+- [LibSharedMedia-3.0]([https://www.wowace.com/projects/libsharedmedia-3-0](https://www.wowace.com/projects/libsharedmedia-3-0/pages/api-documentation)) (embedded or provided by another addon)
+- An addon with LibSharedMedia font support to select the fonts from
 
 All fonts are distributed under their respective open-source licenses.
+
+## Links
+- [CurseForge Project Page](https://www.curseforge.com/wow/addons/sharedmediafontsmono)
+
+## Font Sources
+- Noto Sans Mono (CJK) — [notofonts/noto-cjk](https://github.com/notofonts/noto-cjk/tree/main/Sans/Mono) on GitHub
+- All other fonts — [Google Fonts](https://fonts.google.com/)
 
 ## License
 All Rights Reserved.
