@@ -14,6 +14,12 @@ Includes full Latin and Cyrillic (Russian) coverage, plus Noto Sans Mono fonts f
 
 ## Usage
 
+Two ways to consume registered fonts: fetch one directly by name, or iterate the full catalog to build your own font picker.
+
+### Basic
+
+Fetch a registered font by name and apply it to a `FontString`.
+
 ```lua
 --- @type LibSharedMedia-3.0
 local LSM = LibStub("LibSharedMedia-3.0")
@@ -42,6 +48,8 @@ UIDropDownMenu_SetWidth(dropdown, 180)
 
 UIDropDownMenu_Initialize(dropdown, function(_, level)
   SharedMediaFontsMono:ForEachFont(function(font)
+    if not font:supports(GetLocale()) then return end
+
     local info = UIDropDownMenu_CreateInfo()
     info.text = font.name
     info.func = function()
@@ -52,6 +60,9 @@ UIDropDownMenu_Initialize(dropdown, function(_, level)
   end)
 end)
 ```
+
+## EmmyLua Annotation (For Development)
+- [Annotations.lua](https://github.com/kapresoft/wow-addon-SharedMediaFontsMono/blob/main/Libs/Developer/Annotations.lua)
 
 ## Available Fonts
 | Name | File Name | Size |
