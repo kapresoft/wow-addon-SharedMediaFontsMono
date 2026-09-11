@@ -32,6 +32,27 @@ local myOtherFontString = UIParent:CreateFontString(nil, "OVERLAY")
 myOtherFontString:SetFont(ubuntuMono, 14, "")
 ```
 
+### Iterating the Font Catalog
+
+An easier way to pull fonts is via `ForEachFont()`, which iterates every registered `SharedMediaFontsMono_Font` entry so you can build UI around them without hardcoding names. Here's an example populating a Blizzard dropdown menu:
+
+```lua
+local dropdown = CreateFrame("Frame", "MyFontDropdown", UIParent, "UIDropDownMenuTemplate")
+UIDropDownMenu_SetWidth(dropdown, 180)
+
+UIDropDownMenu_Initialize(dropdown, function(_, level)
+  SharedMediaFontsMono:ForEachFont(function(font)
+    local info = UIDropDownMenu_CreateInfo()
+    info.text = font.name
+    info.func = function()
+      UIDropDownMenu_SetText(dropdown, font.name)
+      myFontString:SetFont(font.path, 12, "")
+    end
+    UIDropDownMenu_AddButton(info, level)
+  end)
+end)
+```
+
 ## Available Fonts
 | Name | File Name | Size |
 |---|---|---|
