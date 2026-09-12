@@ -61,6 +61,18 @@ UIDropDownMenu_Initialize(dropdown, function(_, level)
 end)
 ```
 
+### Default Font
+
+A ready-to-use `Font` object (JetBrains Mono, white text) is registered globally as `SharedMediaFontsMono_DefaultFont` — handy for XML template inheritance or as a fallback in Lua.
+
+```xml
+<Font name="MyBaseFont" inherits="SharedMediaFontsMono_DefaultFont"/>
+```
+
+```lua
+myFontString:SetFontObject(SharedMediaFontsMono_DefaultFont)
+```
+
 ## EmmyLua Annotation (For Development)
 - [Annotations.lua](https://github.com/kapresoft/wow-addon-SharedMediaFontsMono/blob/main/Libs/Developer/Annotations.lua)
 

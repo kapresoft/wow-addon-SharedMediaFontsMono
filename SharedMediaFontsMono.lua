@@ -98,12 +98,27 @@ local function validateFont(font)
   )
 end
 
+--- Creates and registers the addon's default Font object, using the first catalog font.
+--- Global name: SharedMediaFontsMono_DefaultFont
+--- ## Example Usage:
+--- ```
+--- <Font name="MyBaseFont" inherits="SharedMediaFontsMono_DefaultFont"/>
+--- ```
+--- @return Font
+local function RegisterDefaultFont()
+  local defaultFont = CreateFont(addon .. '_DefaultFont')
+  defaultFont:SetFont(catalog[1].path, 12, '')
+  defaultFont:SetTextColor(WHITE_FONT_COLOR:GetRGB())
+  return defaultFont
+end
+
 local function RegisterCatalog()
   for _, font in ipairs(catalog) do
     font.supports = CatalogFontSupports
     validateFont(font)
     LSM:Register(FONT, font.name, font.path, font.localeBit)
   end
+  RegisterDefaultFont()
 end
 
 RegisterCatalog()
