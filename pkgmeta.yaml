@@ -8,12 +8,13 @@ manual-changelog:
 
 embedded-libraries:
   - LibStub
-  - LibPrettyPrint
+  - LibSharedMedia-3.0
 
 tools-used:
   - DevSuite
   - Bugsack
   - Bug-Grabber
+  - DebugChatFrame
 
 externals:
   ThirdParty/Libs/LibSharedMedia-3.0:
