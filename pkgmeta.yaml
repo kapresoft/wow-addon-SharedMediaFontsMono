@@ -8,7 +8,7 @@ manual-changelog:
 
 embedded-libraries:
   - LibStub
-  - LibSharedMedia-3.0
+  - LibSharedMedia-3-0
 
 tools-used:
   - DevSuite
