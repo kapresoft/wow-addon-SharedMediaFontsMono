@@ -1,4 +1,10 @@
-# SharedMedia Fonts Mono (Includes CJK)
+[![Release Build](https://github.com/kapresoft/wow-addon-SharedMediaFontsMono/actions/workflows/release-build.yml/badge.svg)](https://github.com/kapresoft/wow-addon-SharedMediaFontsMono/actions/workflows/release-build.yml)
+
+# SharedMedia Fonts Mono (Includes CJK) :: Monospace fonts for every addon that speaks LibSharedMedia.
+
+> ▶ A [World of Warcraft](https://worldofwarcraft.com/) AddOn
+
+![download-count](https://cf.way2muchnoise.eu/full_1691454_downloads.svg?badge_style=for_the_badge) ![supported-wow-versions](https://cf.way2muchnoise.eu/versions/World%20of%20Warcraft%20Versions_1691454_all.svg?badge_style=for_the_badge)
 
 A World of Warcraft addon that registers a curated collection of open-source monospace fonts with LibSharedMedia-3.0 (LSM). Once installed, any addon that supports custom fonts through LSM (chat frames, unit frames, nameplates, action bars, etc.) can use these fonts directly from its font picker.
 
