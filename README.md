@@ -10,7 +10,7 @@ A World of Warcraft addon that registers a curated collection of open-source mon
 
 <img width="200" alt="SharedMedia-Fonts-Mono-Logo" src="https://github.com/user-attachments/assets/31d4b829-72c2-4320-bc86-9ad25a23db14" />
 
-Includes full Latin and Cyrillic (Russian) coverage, plus Noto Sans Mono fonts for Korean, Simplified Chinese, and Traditional Chinese clients.
+Includes full Latin and Cyrillic (Russian) coverage, plus Noto Sans Mono fonts for Korean, Simplified Chinese, and Traditional Chinese clients. Western and Russian clients also get Noto Sans Mono for CJK text in names and chat.
 
 ## Typical Use Cases
 - Viewing Lua code (in-game editors, error viewers, debug consoles)
@@ -69,7 +69,7 @@ end)
 
 ### Default Font
 
-A ready-to-use `Font` object (JetBrains Mono, white text) is registered globally as `SharedMediaFontsMono_DefaultFont` — handy for XML template inheritance or as a fallback in Lua.
+A ready-to-use `Font` object (white text; JetBrains Mono on Latin and Russian clients, the matching Noto Sans Mono on Korean and Chinese clients) is registered globally as `SharedMediaFontsMono_DefaultFont` — handy for XML template inheritance or as a fallback in Lua.
 
 ```xml
 <Font name="MyBaseFont" inherits="SharedMediaFontsMono_DefaultFont"/>
@@ -88,6 +88,7 @@ myFontString:SetFontObject(SharedMediaFontsMono_DefaultFont)
 | JetBrains Mono | JetBrainsMono-Regular.ttf | 112 KB |
 | PT Mono | PTMono-Regular.ttf | 165 KB |
 | Ubuntu Mono | UbuntuMono-Regular.ttf | 185 KB |
+| Noto Sans Mono | NotoSansMonoCJKsc-Regular.otf | (shared) |
 | Noto Sans Mono (Korean) | NotoSansMonoCJKkr-Regular.otf | 15.6 MB |
 | Noto Sans Mono (Traditional Chinese) | NotoSansMonoCJKtc-Regular.otf | 15.6 MB |
 | Noto Sans Mono (Simplified Chinese) | NotoSansMonoCJKsc-Regular.otf | 15.6 MB |
