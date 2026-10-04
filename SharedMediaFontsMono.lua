@@ -1,14 +1,18 @@
+--- @type Name, table
 local addon, xns = ...
 
---- @type SharedMediaFontsMono
-local o = {}
-SharedMediaFontsMono = o
+--[[-----------------------------------------------------------------------------
+Local Vars
+-------------------------------------------------------------------------------]]
+local DEFAULT_FONT_SIZE = 12
+local FONT_DIR = ([[Interface\AddOns\%s\Assets\Fonts\]]):format(addon)
 
 --- @type LibSharedMedia-3.0
-local LSM = LibStub('LibSharedMedia-3.0')
-local FONT = LSM.MediaType.FONT
-LSM.MediaType.FONT_MONO = FONT .. '-mono'
-local FONT_MONO = LSM.MediaType.FONT_MONO
+local LSM = LibStub('LibSharedMedia-3.0', true)
+assert(type(LSM) == 'table', ('%s:: Unexpected. LibSharedMedia-3.0 missing.'):format(addon))
+
+LSM.MediaType.FONT_MONO = LSM.MediaType.FONT .. '-mono'
+local FONT, FONT_MONO = LSM.MediaType.FONT, LSM.MediaType.FONT_MONO
 
 local WESTERN_AND_RU = bit.bor(LSM.LOCALE_BIT_western, LSM.LOCALE_BIT_ruRU)
 
@@ -20,11 +24,9 @@ local LOCALE_BITS = {
   zhTW = LSM.LOCALE_BIT_zhTW,
 }
 
-local path = ([[Interface\AddOns\%s\Assets\Fonts\]]):format(addon)
-
 --- @param fontFileName string
 --- @return string @The full interface path
-local function fontPath(fontFileName) return path .. fontFileName end
+local function fontPath(fontFileName) return FONT_DIR .. fontFileName end
 
 --- @param filePath string
 --- @return string @File name without extension; '_' and '-' become spaces
@@ -84,21 +86,27 @@ local catalog = {
   },
 }
 
+--[[-----------------------------------------------------------------------------
+Type: SharedMediaFontsMono
+-------------------------------------------------------------------------------]]
+
+--- @type SharedMediaFontsMono
+local o = {}
+SharedMediaFontsMono = o
+
 --- @param sorted? boolean @Case insensitive sort of SharedMediaFontsMono_Font#name field
 --- @return SharedMediaFontsMono_Catalog
 function o:GetCatalog(sorted)
-  if not sorted then return catalog end
-
-  local sortedCatalog = {}
+  local copy = {}
   for i, font in ipairs(catalog) do
-    sortedCatalog[i] = font
+    copy[i] = font
   end
-  table.sort(sortedCatalog, function(a, b) return a.name:lower() < b.name:lower() end)
-  return sortedCatalog
+  if sorted then table.sort(copy, function(a, b) return a.name:lower() < b.name:lower() end) end
+  return copy
 end
 
 --- @param callback SharedMediaFontsMono_Callback
---- @param sorted boolean? @sorted is true by default
+--- @param sorted? boolean @Defaults to true
 function o:ForEachFont(callback, sorted)
   local isSorted = sorted ~= false
   for _, font in ipairs(self:GetCatalog(isSorted)) do
@@ -107,38 +115,8 @@ function o:ForEachFont(callback, sorted)
 end
 
 --[[-----------------------------------------------------------------------------
-Register Fonts
+FontMixin
 -------------------------------------------------------------------------------]]
---- @param str any
---- @return boolean @false if nil, not a string, empty, or just blank
-local function IsValidString(str) return type(str) == 'string' and str:trim() ~= '' end
-
---- @param font SharedMediaFontsMono_Font
-local function validateFont(font)
-  assertsafe(IsValidString(font.name), 'Font is missing a name: %s', tostring(font.path))
-  assertsafe(IsValidString(font.path), 'Font "%s" is missing a path', tostring(font.name))
-  assertsafe(
-    font.localeBit == nil or type(font.localeBit) == 'number',
-    'Font "%s" has an invalid localeBit: %s',
-    tostring(font.name),
-    tostring(font.localeBit)
-  )
-end
-
---- Creates and registers the addon's default Font object.
---- Global name: SharedMediaFontsMono_DefaultFont
---- ## Example Usage:
---- ```
---- <Font name="MyBaseFont" inherits="SharedMediaFontsMono_DefaultFont"/>
---- ```
---- @param font SharedMediaFontsMono_Font @First font that supports the client's locale
---- @return Font
-local function RegisterDefaultFont(font)
-  local defaultFont = CreateFont(addon .. '_DefaultFont')
-  defaultFont:SetFont(font.path, 12, '')
-  defaultFont:SetTextColor(WHITE_FONT_COLOR:GetRGB())
-  return defaultFont
-end
 
 --- @type SharedMediaFontsMono_FontMixin
 local FontMixin = {}
@@ -152,22 +130,64 @@ function FontMixin:supports(locale)
   return self.localeBit ~= nil and bit.band(self.localeBit, localeBit) ~= 0
 end
 
+--[[-----------------------------------------------------------------------------
+Register Fonts
+-------------------------------------------------------------------------------]]
+--- @param str any
+--- @return boolean @false if nil, not a string, empty, or just blank
+local function IsValidString(str) return type(str) == 'string' and str:trim() ~= '' end
+
+--- @param font SharedMediaFontsMono_Font
+local function ValidateFont(font)
+  assertsafe(IsValidString(font.name), 'Font is missing a name: %s', tostring(font.path))
+  assertsafe(IsValidString(font.path), 'Font "%s" is missing a path', tostring(font.name))
+  assertsafe(
+    font.localeBit == nil or type(font.localeBit) == 'number',
+    'Font "%s" has an invalid localeBit: %s',
+    tostring(font.name),
+    tostring(font.localeBit)
+  )
+end
+
+--- Sets the 'font-mono' default and creates the global Font object.
+--- Global name: SharedMediaFontsMono_DefaultFont
+--- ## Example Usage:
+--- ```
+--- <Font name="MyBaseFont" inherits="SharedMediaFontsMono_DefaultFont"/>
+--- ```
+--- @param firstMono SharedMediaFontsMono_Font? @nil falls back to the first catalog font
+--- @return Font
+local function RegisterDefaultFont(firstMono)
+  local font = firstMono or catalog[1]
+  LSM:SetDefault(FONT_MONO, font.name)
+  local defaultFont = CreateFont(addon .. '_DefaultFont')
+  defaultFont:SetFont(font.path, DEFAULT_FONT_SIZE, '')
+  defaultFont:SetTextColor(WHITE_FONT_COLOR:GetRGB())
+  return defaultFont
+end
+
+--- Also registers under 'font-mono' if the locale supports it.
+--- @param font SharedMediaFontsMono_Font
+--- @param locale string
+--- @return boolean @true if registered under 'font-mono'
+local function RegisterFont(font, locale)
+  Mixin(font, FontMixin)
+  ValidateFont(font)
+  LSM:Register(FONT, baseName(font.path), font.path, font.localeBit)
+  if not font:supports(locale) then return false end
+
+  LSM:Register(FONT_MONO, font.name, font.path)
+  return true
+end
+
 local function RegisterCatalog()
   local locale = GetLocale()
   --- @type SharedMediaFontsMono_Font?
   local firstMono
   for _, font in ipairs(catalog) do
-    Mixin(font, FontMixin)
-    validateFont(font)
-    LSM:Register(FONT, baseName(font.path), font.path, font.localeBit)
-    if font:supports(locale) then
-      LSM:Register(FONT_MONO, font.name, font.path)
-      firstMono = firstMono or font
-    end
+    if RegisterFont(font, locale) then firstMono = firstMono or font end
   end
-  local defaultFont = firstMono or catalog[1]
-  LSM:SetDefault(FONT_MONO, defaultFont.name)
-  RegisterDefaultFont(defaultFont)
+  RegisterDefaultFont(firstMono)
 end
 
 RegisterCatalog()
