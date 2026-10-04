@@ -26,6 +26,10 @@ local path = ([[Interface\AddOns\%s\Assets\Fonts\]]):format(addon)
 --- @return string @The full interface path
 local function fontPath(fontFileName) return path .. fontFileName end
 
+--- @param filePath string
+--- @return string @File name without extension; '_' and '-' become spaces
+local function baseName(filePath) return (filePath:match('([^\\]+)%.%w+$'):gsub('[_%-]', ' ')) end
+
 --- @type SharedMediaFontsMono_Catalog
 local catalog = {
   {
@@ -155,7 +159,7 @@ local function RegisterCatalog()
   for _, font in ipairs(catalog) do
     Mixin(font, FontMixin)
     validateFont(font)
-    LSM:Register(FONT, font.name, font.path, font.localeBit)
+    LSM:Register(FONT, baseName(font.path), font.path, font.localeBit)
     if font:supports(locale) then
       LSM:Register(FONT_MONO, font.name, font.path)
       firstMono = firstMono or font
