@@ -1,22 +1,48 @@
---- Global set by the SharedMediaFontsMono addon; add it as a Dependency/OptionalDep
---- in your .toc, then access it directly as `SharedMediaFontsMono` (no LibStub).
---- @class SharedMediaFontsMono
-local o = {}
+--[[-----------------------------------------------------------------------------
+Type: SharedMediaFontsMono_FontMixin
+-------------------------------------------------------------------------------]]
 
---- @class SharedMediaFontsMono_Font
+--- @class SharedMediaFontsMono_FontMixin
+local FontMixin = {}
+
+--- ```
+--- ### Usage:
+--- if font:supports(GetLocale()) then end
+--- ```
+--- @param locale string
+--- @return boolean
+function FontMixin:supports(locale) return true end
+
+--[[-----------------------------------------------------------------------------
+Type: SharedMediaFontsMono_Font
+-------------------------------------------------------------------------------]]
+
+--- @class SharedMediaFontsMono_Font: SharedMediaFontsMono_FontMixin
 --- @field name string
 --- @field path string
 --- @field localeBit number?
---- @field supports fun(self:SharedMediaFontsMono_Font, locale:string):boolean  @ Ex: font:supports(GetLocale())
+
+--[[-----------------------------------------------------------------------------
+Type: SharedMediaFontsMono_Catalog
+-------------------------------------------------------------------------------]]
 
 --- @class SharedMediaFontsMono_Catalog: SharedMediaFontsMono_Font[]
+
+--[[-----------------------------------------------------------------------------
+Type: SharedMediaFontsMono
+-------------------------------------------------------------------------------]]
+
+--- Global set by the SharedMediaFontsMono addon; add it as a Dependency/OptionalDep
+--- in your .toc, then access it directly as `SharedMediaFontsMono` (no LibStub).
+--- @class SharedMediaFontsMono
+local o = {}; SharedMediaFontsMono = o
 
 --- ```
 --- ### Usage:
 --- local catalog = SharedMediaFontsMono:GetCatalog()
 --- local sortedCatalog = SharedMediaFontsMono:GetCatalog(true)
 --- ```
---- @param sorted? boolean @Case insensitive sort of SharedMediaFontsMono_Font#name field [Optional]
+--- @param sorted? boolean @Case insensitive sort of SharedMediaFontsMono_Font#name field
 --- @return SharedMediaFontsMono_Catalog
 function o:GetCatalog(sorted) return {} end
 
@@ -29,6 +55,6 @@ function o:GetCatalog(sorted) return {} end
 --- SharedMediaFontsMono:ForEachFont(function(font) end, false)
 --- ```
 --- @param callback SharedMediaFontsMono_Callback
---- @param sorted boolean? @sorted is true by default
+--- @param sorted? boolean @sorted is true by default
 --- @overload fun(callback: SharedMediaFontsMono_Callback)
 function o:ForEachFont(callback, sorted) end

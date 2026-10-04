@@ -30,11 +30,34 @@ local function fontPath(fontFileName) return path .. fontFileName end
 local catalog = {
   {
     name = 'JetBrains Mono',
-    path = fontPath('JetBrainsMono-Regular.ttf'),
+    path = fontPath('JetBrainsMono-Medium.ttf'),
     localeBit = WESTERN_AND_RU,
   },
-  { name = 'PT Mono', path = fontPath('PTMono-Regular.ttf'), localeBit = WESTERN_AND_RU },
-  { name = 'Ubuntu Mono', path = fontPath('UbuntuMono-Regular.ttf'), localeBit = WESTERN_AND_RU },
+  {
+    name = 'Ubuntu Sans Mono',
+    path = fontPath('UbuntuSansMono-Medium.ttf'),
+    localeBit = WESTERN_AND_RU,
+  },
+  {
+    name = 'IBM Plex Mono',
+    path = fontPath('IBMPlexMono-Medium.ttf'),
+    localeBit = WESTERN_AND_RU,
+  },
+  {
+    name = 'Source Code Pro',
+    path = fontPath('SourceCodePro-Medium.ttf'),
+    localeBit = WESTERN_AND_RU,
+  },
+  {
+    name = 'Roboto Mono',
+    path = fontPath('RobotoMono-Medium.ttf'),
+    localeBit = WESTERN_AND_RU,
+  },
+  {
+    name = 'Inconsolata',
+    path = fontPath('Inconsolata_SemiCondensed-Medium.ttf'),
+    localeBit = LSM.LOCALE_BIT_western,
+  },
   {
     name = 'Noto Sans Mono',
     path = fontPath('NotoSansMonoCJKsc-Regular.otf'),
@@ -57,15 +80,7 @@ local catalog = {
   },
 }
 
---- @param font SharedMediaFontsMono_Font
---- @param locale string
---- @return boolean
-local function CatalogFontSupports(font, locale)
-  local localeBit = LOCALE_BITS[locale] or LSM.LOCALE_BIT_western
-  return font.localeBit ~= nil and bit.band(font.localeBit, localeBit) ~= 0
-end
-
---- @param sorted? boolean @Case insensitive sort of SharedMediaFontsMono_Font#name field [Optional]
+--- @param sorted? boolean @Case insensitive sort of SharedMediaFontsMono_Font#name field
 --- @return SharedMediaFontsMono_Catalog
 function o:GetCatalog(sorted)
   if not sorted then return catalog end
@@ -121,15 +136,26 @@ local function RegisterDefaultFont(font)
   return defaultFont
 end
 
+--- @type SharedMediaFontsMono_FontMixin
+local FontMixin = {}
+
+--- Locale check also used to filter 'font-mono' registration:
+--- LSM only applies localeBit to the 'font' media type.
+--- @param locale string
+--- @return boolean
+function FontMixin:supports(locale)
+  local localeBit = LOCALE_BITS[locale] or LSM.LOCALE_BIT_western
+  return self.localeBit ~= nil and bit.band(self.localeBit, localeBit) ~= 0
+end
+
 local function RegisterCatalog()
   local locale = GetLocale()
   --- @type SharedMediaFontsMono_Font?
   local firstMono
   for _, font in ipairs(catalog) do
-    font.supports = CatalogFontSupports
+    Mixin(font, FontMixin)
     validateFont(font)
     LSM:Register(FONT, font.name, font.path, font.localeBit)
-    -- LSM only applies locale masks to 'font'
     if font:supports(locale) then
       LSM:Register(FONT_MONO, font.name, font.path)
       firstMono = firstMono or font
