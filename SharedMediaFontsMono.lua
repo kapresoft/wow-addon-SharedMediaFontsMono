@@ -7,6 +7,9 @@ SharedMediaFontsMono = o
 --- @type LibSharedMedia-3.0
 local LSM = LibStub('LibSharedMedia-3.0')
 local FONT = LSM.MediaType.FONT
+LSM.MediaType.FONT_MONO = FONT .. '-mono'
+local FONT_MONO = LSM.MediaType.FONT_MONO
+
 local WESTERN_AND_RU = bit.bor(LSM.LOCALE_BIT_western, LSM.LOCALE_BIT_ruRU)
 
 --- @type table<string, number>
@@ -32,6 +35,11 @@ local catalog = {
   },
   { name = 'PT Mono', path = fontPath('PTMono-Regular.ttf'), localeBit = WESTERN_AND_RU },
   { name = 'Ubuntu Mono', path = fontPath('UbuntuMono-Regular.ttf'), localeBit = WESTERN_AND_RU },
+  {
+    name = 'Noto Sans Mono',
+    path = fontPath('NotoSansMonoCJKsc-Regular.otf'),
+    localeBit = WESTERN_AND_RU,
+  },
   {
     name = 'Noto Sans Mono (Korean)',
     path = fontPath('NotoSansMonoCJKkr-Regular.otf'),
@@ -98,27 +106,38 @@ local function validateFont(font)
   )
 end
 
---- Creates and registers the addon's default Font object, using the first catalog font.
+--- Creates and registers the addon's default Font object.
 --- Global name: SharedMediaFontsMono_DefaultFont
 --- ## Example Usage:
 --- ```
 --- <Font name="MyBaseFont" inherits="SharedMediaFontsMono_DefaultFont"/>
 --- ```
+--- @param font SharedMediaFontsMono_Font @First font that supports the client's locale
 --- @return Font
-local function RegisterDefaultFont()
+local function RegisterDefaultFont(font)
   local defaultFont = CreateFont(addon .. '_DefaultFont')
-  defaultFont:SetFont(catalog[1].path, 12, '')
+  defaultFont:SetFont(font.path, 12, '')
   defaultFont:SetTextColor(WHITE_FONT_COLOR:GetRGB())
   return defaultFont
 end
 
 local function RegisterCatalog()
+  local locale = GetLocale()
+  --- @type SharedMediaFontsMono_Font?
+  local firstMono
   for _, font in ipairs(catalog) do
     font.supports = CatalogFontSupports
     validateFont(font)
     LSM:Register(FONT, font.name, font.path, font.localeBit)
+    -- LSM only applies locale masks to 'font'
+    if font:supports(locale) then
+      LSM:Register(FONT_MONO, font.name, font.path)
+      firstMono = firstMono or font
+    end
   end
-  RegisterDefaultFont()
+  local defaultFont = firstMono or catalog[1]
+  LSM:SetDefault(FONT_MONO, defaultFont.name)
+  RegisterDefaultFont(defaultFont)
 end
 
 RegisterCatalog()
