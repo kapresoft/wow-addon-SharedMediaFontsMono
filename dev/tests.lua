@@ -1,4 +1,4 @@
-
+-- test 1
 local function t1()
   local addon = 'SharedMediaFontsMono'
   --- Loads SharedMediaFontsMono (LoadOnDemand); safe to call repeatedly.
