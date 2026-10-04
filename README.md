@@ -31,9 +31,9 @@ Fetch a registered font by name and apply it to a `FontString`.
 local LSM = LibStub("LibSharedMedia-3.0")
 
 --- @type string
-local jetBrainsMono = LSM:Fetch(LSM.MediaType.FONT, "JetBrains Mono")
+local jetBrainsMono = LSM:Fetch(LSM.MediaType.FONT, "JetBrainsMono Medium")
 --- @type string
-local ubuntuSansMono = LSM:Fetch(LSM.MediaType.FONT, "Ubuntu Sans Mono")
+local ubuntuSansMono = LSM:Fetch(LSM.MediaType.FONT, "UbuntuSansMono Medium")
 
 --- @type FontString
 local myFontString = UIParent:CreateFontString(nil, "OVERLAY")
@@ -83,18 +83,18 @@ myFontString:SetFontObject(SharedMediaFontsMono_DefaultFont)
 - [SharedMediaFontsMono-Annotations.lua](https://github.com/kapresoft/wow-addon-SharedMediaFontsMono/blob/main/Libs/Annotations/SharedMediaFontsMono-Annotations.lua)
 
 ## Available Fonts
-| Name | File Name | Size |
-|---|---|---|
-| JetBrains Mono | JetBrainsMono-Medium.ttf | 112 KB |
-| Ubuntu Sans Mono | UbuntuSansMono-Medium.ttf | 116 KB |
-| IBM Plex Mono | IBMPlexMono-Medium.ttf | 132 KB |
-| Source Code Pro | SourceCodePro-Medium.ttf | 130 KB |
-| Roboto Mono | RobotoMono-Medium.ttf | 85 KB |
-| Inconsolata | Inconsolata_SemiCondensed-Medium.ttf | 100 KB |
-| Noto Sans Mono | NotoSansMonoCJKsc-Regular.otf | (shared) |
-| Noto Sans Mono (Korean) | NotoSansMonoCJKkr-Regular.otf | 15.6 MB |
-| Noto Sans Mono (Simplified Chinese) | NotoSansMonoCJKsc-Regular.otf | 15.6 MB |
-| Noto Sans Mono (Traditional Chinese) | NotoSansMonoCJKtc-Regular.otf | 15.6 MB |
+| Name | LSM Name | File Name | Size |
+|---|---|---|---|
+| JetBrains Mono | JetBrainsMono Medium | JetBrainsMono-Medium.ttf | 112 KB |
+| Ubuntu Sans Mono | UbuntuSansMono Medium | UbuntuSansMono-Medium.ttf | 116 KB |
+| IBM Plex Mono | IBMPlexMono Medium | IBMPlexMono-Medium.ttf | 132 KB |
+| Source Code Pro | SourceCodePro Medium | SourceCodePro-Medium.ttf | 130 KB |
+| Roboto Mono | RobotoMono Medium | RobotoMono-Medium.ttf | 85 KB |
+| Inconsolata | Inconsolata SemiCondensed Medium | Inconsolata_SemiCondensed-Medium.ttf | 100 KB |
+| Noto Sans Mono | NotoSansMonoCJKsc Regular | NotoSansMonoCJKsc-Regular.otf | (shared) |
+| Noto Sans Mono (Korean) | NotoSansMonoCJKkr Regular | NotoSansMonoCJKkr-Regular.otf | 15.6 MB |
+| Noto Sans Mono (Simplified Chinese) | NotoSansMonoCJKsc Regular | NotoSansMonoCJKsc-Regular.otf | 15.6 MB |
+| Noto Sans Mono (Traditional Chinese) | NotoSansMonoCJKtc Regular | NotoSansMonoCJKtc-Regular.otf | 15.6 MB |
 
 ## Requirements
 - [LibSharedMedia-3.0]([https://www.wowace.com/projects/libsharedmedia-3-0](https://www.wowace.com/projects/libsharedmedia-3-0/pages/api-documentation)) (embedded or provided by another addon)
