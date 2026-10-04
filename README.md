@@ -112,6 +112,8 @@ All fonts are distributed under their respective open-source licenses.
 ## License
 All Rights Reserved.
 
+The bundled fonts are not covered by this; each ships under its own license in [Assets/Fonts/Licenses](https://github.com/kapresoft/wow-addon-SharedMediaFontsMono/tree/main/Assets/Fonts/Licenses).
+
 ## Donations
 
 If this addon has made your addon gameplay or development easier, consider supporting its development:
