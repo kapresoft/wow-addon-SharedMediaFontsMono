@@ -32,4 +32,3 @@ function o:GetCatalog(sorted) return {} end
 --- @param sorted boolean? @sorted is true by default
 --- @overload fun(callback: SharedMediaFontsMono_Callback)
 function o:ForEachFont(callback, sorted) end
-
