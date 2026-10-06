@@ -1,12 +1,12 @@
 [![Release Build](https://github.com/kapresoft/wow-addon-SharedMediaFontsMono/actions/workflows/release-build.yml/badge.svg)](https://github.com/kapresoft/wow-addon-SharedMediaFontsMono/actions/workflows/release-build.yml)
 
-# SharedMedia Fonts Mono (Includes CJK) :: Monospace fonts for every addon that speaks LibSharedMedia.
+# SharedMedia Fonts Mono :: Same width, every glyph, every addon
 
 > ▶ A [World of Warcraft](https://worldofwarcraft.com/) AddOn
 
 ![download-count](https://cf.way2muchnoise.eu/full_1691454_downloads.svg?badge_style=for_the_badge) ![supported-wow-versions](https://cf.way2muchnoise.eu/versions/World%20of%20Warcraft%20Versions_1691454_all.svg?badge_style=for_the_badge)
 
-A World of Warcraft addon that registers a curated collection of open-source monospace fonts with LibSharedMedia-3.0 (LSM). Once installed, any addon that supports custom fonts through LSM (chat frames, unit frames, nameplates, action bars, etc.) can use these fonts directly from its font picker.
+A World of Warcraft addon that registers a curated collection of open-source monospace fonts with [LibSharedMedia-3.0](https://www.wowace.com/projects/libsharedmedia-3-0/pages/api-documentation) (LSM). Once installed, any addon that supports custom fonts through LSM (chat frames, unit frames, nameplates, action bars, etc.) can use these fonts directly from its font picker.
 
 <img width="200" alt="SharedMedia-Fonts-Mono-Logo" src="https://github.com/user-attachments/assets/31d4b829-72c2-4320-bc86-9ad25a23db14" />
 
@@ -20,33 +20,71 @@ Includes full Latin and Cyrillic (Russian) coverage, plus Noto Sans Mono fonts f
 
 ## Usage
 
-Two ways to consume registered fonts: fetch one directly by name, or iterate the full catalog to build your own font picker.
+Fetch fonts through standard LSM calls, or iterate this addon's catalog to build your own font picker.
 
 ### Basic
 
-Fetch a registered font by name and apply it to a `FontString`.
+Every font is registered under LSM's standard `font` media type, keyed by its LSM name (see [Available Fonts](https://github.com/kapresoft/wow-addon-SharedMediaFontsMono#available-fonts)), so a plain `LSM:Fetch()` is all it takes.
+
+#### Fetching All Fonts
+
+`LSM:List()` returns the registered names of a media type, sorted, and `LSM:HashTable()` maps each name to its path. Listing the standard `font` media type returns every font LSM knows about: these, LSM's built-in defaults, and those registered by other addons.
 
 ```lua
 --- @type LibSharedMedia-3.0
 local LSM = LibStub("LibSharedMedia-3.0")
+local FONT = LSM.MediaType.FONT
 
---- @type string
-local jetBrainsMono = LSM:Fetch(LSM.MediaType.FONT, "JetBrainsMono Medium")
---- @type string
-local ubuntuSansMono = LSM:Fetch(LSM.MediaType.FONT, "UbuntuSansMono Medium")
+--- @type string[]
+local fontNames = LSM:List(FONT)
+for _, name in ipairs(fontNames) do
+  print(name, LSM:Fetch(FONT, name))
+end
 
+--- @type table<string, string>
+local fonts = LSM:HashTable(FONT)
+local jetBrainsMono = fonts["JetBrainsMono Medium"]
+```
+
+**Mono fonts only:** this addon also registers its fonts under `font-mono` (aliased as `LSM.MediaType.FONT_MONO` once it loads). It's not a standard LSM media type, so other addons won't look for it, but it lists just this addon's fonts for the client locale, keyed by display name (e.g. `JetBrains Mono`).
+
+```lua
+--- @type string[]
+local monoFontNames = LSM:List("font-mono")
+for _, name in ipairs(monoFontNames) do
+  print(name, LSM:Fetch("font-mono", name))
+end
+
+--- @type table<string, string>
+local monoFonts = LSM:HashTable("font-mono")
+local jetBrainsMono = monoFonts["JetBrains Mono"]
+```
+
+#### Fetching Individual Fonts
+
+Locale support is standard LSM behavior, so there's nothing to check on your side: each font is registered with the client locales it supports, and LSM skips any font that doesn't match the client. Fetching a skipped font returns LSM's default font, or `nil` if you pass `true` as the third argument (`noDefault`).
+
+```lua
+-- nil if not registered for this client's locale
+local jetBrainsMono = LSM:Fetch(FONT, "JetBrainsMono Medium", true)
+
+-- Western, Russian and Simplified Chinese clients
+local notoSansMonoSC = LSM:Fetch(FONT, "NotoSansMonoCJKsc Regular")
+```
+
+#### Applying a Font to a FontString
+
+A fetched font path, such as `jetBrainsMono` above, goes straight into `SetFont()` on any `FontString`.
+
+```lua
 --- @type FontString
 local myFontString = UIParent:CreateFontString(nil, "OVERLAY")
 myFontString:SetFont(jetBrainsMono, 12, "")
-
---- @type FontString
-local myOtherFontString = UIParent:CreateFontString(nil, "OVERLAY")
-myOtherFontString:SetFont(ubuntuSansMono, 14, "")
 ```
 
 ### Iterating the Font Catalog
 
-An easier way to pull fonts is via `ForEachFont()`, which iterates every registered `SharedMediaFontsMono_Font` entry so you can build UI around them without hardcoding names. Here's an example populating a Blizzard dropdown menu:
+For ease of iteration, this addon provides `SharedMediaFontsMono:ForEachFont()`, a convenience method outside of LSM. It walks every [`SharedMediaFontsMono_Font`](https://github.com/kapresoft/wow-addon-SharedMediaFontsMono/blob/main/Libs/Annotations/SharedMediaFontsMono-Annotations.lua) in the catalog, so you can build UI around them without hardcoding names. The catalog covers all locales, so filter with `font:supports()`. Here's an example populating a Blizzard dropdown menu:
 
 ```lua
 local dropdown = CreateFrame("Frame", "MyFontDropdown", UIParent, "UIDropDownMenuTemplate")
@@ -83,24 +121,45 @@ myFontString:SetFontObject(SharedMediaFontsMono_DefaultFont)
 - [SharedMediaFontsMono-Annotations.lua](https://github.com/kapresoft/wow-addon-SharedMediaFontsMono/blob/main/Libs/Annotations/SharedMediaFontsMono-Annotations.lua)
 
 ## Available Fonts
-| Name | LSM Name | File Name | Size |
-|---|---|---|---|
-| JetBrains Mono | JetBrainsMono Medium | JetBrainsMono-Medium.ttf | 112 KB |
-| Ubuntu Sans Mono | UbuntuSansMono Medium | UbuntuSansMono-Medium.ttf | 116 KB |
-| IBM Plex Mono | IBMPlexMono Medium | IBMPlexMono-Medium.ttf | 132 KB |
-| Source Code Pro | SourceCodePro Medium | SourceCodePro-Medium.ttf | 130 KB |
-| Roboto Mono | RobotoMono Medium | RobotoMono-Medium.ttf | 85 KB |
-| Inconsolata | Inconsolata SemiCondensed Medium | Inconsolata_SemiCondensed-Medium.ttf | 100 KB |
-| Noto Sans Mono | NotoSansMonoCJKsc Regular | NotoSansMonoCJKsc-Regular.otf | (shared) |
-| Noto Sans Mono (Korean) | NotoSansMonoCJKkr Regular | NotoSansMonoCJKkr-Regular.otf | 15.6 MB |
-| Noto Sans Mono (Simplified Chinese) | NotoSansMonoCJKsc Regular | NotoSansMonoCJKsc-Regular.otf | 15.6 MB |
-| Noto Sans Mono (Traditional Chinese) | NotoSansMonoCJKtc Regular | NotoSansMonoCJKtc-Regular.otf | 15.6 MB |
+
+The same fonts are registered under two media types, with different names for each.
+
+### General: `font` (`LSM.MediaType.FONT`)
+
+The standard LSM media type, shared by every addon and font picker. Since this list mixes fonts from many sources, each name follows its font file, so the exact family and weight stay visible.
+
+| LSM Name | File Name | Clients |
+|---|---|---|
+| JetBrainsMono Medium | JetBrainsMono-Medium.ttf | Western, Russian |
+| UbuntuSansMono Medium | UbuntuSansMono-Medium.ttf | Western, Russian |
+| IBMPlexMono Medium | IBMPlexMono-Medium.ttf | Western, Russian |
+| SourceCodePro Medium | SourceCodePro-Medium.ttf | Western, Russian |
+| RobotoMono Medium | RobotoMono-Medium.ttf | Western, Russian |
+| Inconsolata SemiCondensed Medium | Inconsolata_SemiCondensed-Medium.ttf | Western |
+| NotoSansMonoCJKsc Regular | NotoSansMonoCJKsc-Regular.otf | Western, Russian, Simplified Chinese |
+| NotoSansMonoCJKkr Regular | NotoSansMonoCJKkr-Regular.otf | Korean |
+| NotoSansMonoCJKtc Regular | NotoSansMonoCJKtc-Regular.otf | Traditional Chinese |
+
+### Mono only: `font-mono` (`LSM.MediaType.FONT_MONO`)
+
+This addon's own media type, tailored for mono-only retrieval. It holds nothing but these fonts, so each one uses a plain display name.
+
+| Display Name | File Name | Clients |
+|---|---|---|
+| JetBrains Mono | JetBrainsMono-Medium.ttf | Western, Russian |
+| Ubuntu Sans Mono | UbuntuSansMono-Medium.ttf | Western, Russian |
+| IBM Plex Mono | IBMPlexMono-Medium.ttf | Western, Russian |
+| Source Code Pro | SourceCodePro-Medium.ttf | Western, Russian |
+| Roboto Mono | RobotoMono-Medium.ttf | Western, Russian |
+| Inconsolata | Inconsolata_SemiCondensed-Medium.ttf | Western |
+| Noto Sans Mono | NotoSansMonoCJKsc-Regular.otf | Western, Russian |
+| Noto Sans Mono (Korean) | NotoSansMonoCJKkr-Regular.otf | Korean |
+| Noto Sans Mono (Simplified Chinese) | NotoSansMonoCJKsc-Regular.otf | Simplified Chinese |
+| Noto Sans Mono (Traditional Chinese) | NotoSansMonoCJKtc-Regular.otf | Traditional Chinese |
 
 ## Requirements
-- [LibSharedMedia-3.0]([https://www.wowace.com/projects/libsharedmedia-3-0](https://www.wowace.com/projects/libsharedmedia-3-0/pages/api-documentation)) (embedded or provided by another addon)
+- [LibSharedMedia-3.0](https://www.wowace.com/projects/libsharedmedia-3-0/pages/api-documentation) (embedded or provided by another addon)
 - An addon with LibSharedMedia font support to select the fonts from
-
-All fonts are distributed under their respective open-source licenses.
 
 ## Links
 - [CurseForge Project Page](https://www.curseforge.com/wow/addons/sharedmediafontsmono)
